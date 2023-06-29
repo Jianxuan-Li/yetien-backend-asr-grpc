@@ -12,7 +12,6 @@ on:
 
 env:
   # Define image names
-  # ghcr.io/jianxuan-li/yetien-asr-model-small-en-v1
   MODEL_IMAGE: ${{ secrets.MODEL_IMAGE }}
   REGISTRY: ghcr.io
 

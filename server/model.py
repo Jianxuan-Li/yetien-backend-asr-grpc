@@ -2,8 +2,8 @@ from heapq import heappush, heappop, heapify
 from time import monotonic
 import threading
 from .lib import Singleton
+from .settings import MODEL_NUM
 
-MODEL_NUM = 2
 
 class Model(metaclass=Singleton):
     def __init__(self) -> None:

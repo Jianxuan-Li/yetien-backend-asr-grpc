@@ -40,3 +40,18 @@ Prerequisites: Docker installed
 1. In the dev-container, run `./dev run` to start the model server
 3. Run `./dev down` to stop the development
 
+#### connect to development models
+
+https://asr.yetien.com/docs#/
+
+* save username and password into environment variables:
+
+e.g. in `~/.bashrc` or `~/.zshrc` add:
+
+```bash
+export YETIEN_DEV_MODEL_1_USER=xxxx
+export YETIEN_DEV_MODEL_1_PWD=xxxx
+export YETIEN_DEV_MODEL_2_USER=xxxx
+export YETIEN_DEV_MODEL_2_PWD=xxxx
+// ... once we have more models
+```

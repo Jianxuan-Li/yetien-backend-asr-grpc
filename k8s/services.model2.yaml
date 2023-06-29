@@ -1,0 +1,12 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: yetien-asr-model-2
+spec:
+  selector:
+    app: yetien-asr-model-2
+  ports:
+    - protocol: TCP
+      port: 9000
+      targetPort: 9000
+      name: http

@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yetien-asr-model-1
+  labels:
+    app: yetien-asr-model-1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yetien-asr-model-1
+  template:
+    metadata:
+      labels:
+        app: yetien-asr-model-1
+    spec:
+      nodeName: __NODE_NAME__
+      containers:
+        - name: yetien-asr-model-1
+          image: __IMAGE__
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 9000
+          env:
+            - name: ASR_MODEL
+              value: small.en

@@ -26,10 +26,12 @@ information about the project:
 * Docker
 * Kubernetes
 * AWS S3
+* Redis
 
 ## Development
 
 System: Windows(WSL2) / Linux / Mac
+
 Prerequisites: Docker installed
 
 1. Clone the repo

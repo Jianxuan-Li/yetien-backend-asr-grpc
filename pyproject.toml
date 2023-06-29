@@ -8,6 +8,9 @@ packages = [{include = "yetien_asr_model_server_grpc"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+grpcio = "^1.56.0"
+grpcio-tools = "^1.56.0"
+redis = "^4.6.0"
 
 
 [build-system]

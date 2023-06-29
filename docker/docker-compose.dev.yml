@@ -1,0 +1,28 @@
+version: "3.5"
+
+services:
+  cache:
+    image: redis:7
+    ports:
+      - '6379:6379'
+    command: redis-server --save 60 1 --loglevel warning --requirepass aklsdfjlaekfeiaoeijfaoe
+    volumes: 
+      - cache:/data
+  asrserver:
+    image: docker.io/freeyeti/dev-in-docker:python3.10-poetry1.4.0-gdal-dev
+    container_name: asr-server-dev
+    env_file: ../.env
+    environment:
+      - IN_DEV_CONTAINER=yes
+    ports:
+      - "0.0.0.0:8000:8000"
+    volumes:
+      - ../:/code
+      - ../tmp/data:/data
+      - pypoetrycache:/root/.cache/pypoetry
+    depends_on:
+      - cache
+
+volumes:
+  pypoetrycache:
+  cache:

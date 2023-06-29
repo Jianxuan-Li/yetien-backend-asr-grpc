@@ -1,0 +1,84 @@
+#!/bin/bash
+if [ $1 == "" ]; then
+    echo $"Usage: $0 {up|down|run|docker-restart}"
+    exit 0
+fi
+
+PROJECT_NAME="yetien_asr_server_dev"
+PYTHON_DEV_CONTAINER_NAME="asrserver_dev_container"
+SVC_NAME="asrserver"
+
+case $1 in
+    up)
+        if [ -z "$IN_CONTAINER" ] && [ "$IN_CONTAINER" == "yes" ]; then
+            echo "Use this command out of container."
+            exit 0
+        fi
+        mkdir -p ./tmp/{cache,logs}
+        docker compose -p $PROJECT_NAME -f docker/docker-compose.dev.yml run --name $PYTHON_DEV_CONTAINER_NAME -p 8000:8000 $SVC_NAME zsh
+        ;;
+    # the test-in-container command is used to run the tests in a new container.
+    # please keep the test stateless, so that the tests can be run on github actions.
+    test-in-container)
+        mkdir -p ./tmp/{cache,logs}
+        docker compose -p $PROJECT_NAME -f docker/docker-compose.test.yml run backend_test /code/docker/test-in-container.sh
+        docker compose -p $PROJECT_NAME -f docker/docker-compose.test.yml down
+        ;;
+    initdir)
+        mkdir -p /data/logs
+        mkdir -p /data/cache
+        ;;
+    run)
+        if [ -z "$IN_DEV_CONTAINER" ] || [ "$IN_DEV_CONTAINER" != "yes" ]; then
+            echo "Use this command in container."
+            exit 0
+        fi
+        poetry install
+        poetry run python3 manage.py migrate
+        poetry run python3 manage.py runserver 0.0.0.0:8000
+        ;;
+    mkmsg)
+        poetry run python3 manage.py makemessages -l en
+        ;;
+    comsg)
+        poetry run python3 manage.py compilemessages -l en
+        ;;
+    makemigrations)
+        poetry run python3 manage.py makemigrations
+        ;;
+    createsuperuser)
+        poetry run python3 manage.py createsuperuser
+        ;;
+    migrate)
+        poetry run python3 manage.py migrate
+        ;;
+    test)
+        poetry run python3 manage.py test
+        ;;
+    coverage)
+        poetry run coverage run --source='.' manage.py test
+        poetry run coverage report
+        ;;
+    down)
+        if [ -z "$IN_CONTAINER" ] && [ "$IN_CONTAINER" == "yes" ]; then
+            echo "Use this command out of container."
+            exit 0
+        fi
+        docker compose -p $PROJECT_NAME -f docker/docker-compose.dev.yml down
+        docker stop $PYTHON_DEV_CONTAINER_NAME
+        docker rm $PYTHON_DEV_CONTAINER_NAME
+        ;;
+    deploy-check)
+        if [ -z "$IN_CONTAINER" ] || [ "$IN_CONTAINER" != "yes" ]; then
+            echo "Use this command in container."
+            exit 0
+        fi
+        DJANGO_SETTINGS_MODULE=app.settings.production poetry run python3 manage.py check --deploy
+        ;;
+    docker-restart)
+        docker start $(docker ps -a -q -f status=exited)
+        ;;
+    -h | --help)
+        echo $"Usage: $0 {backend|down|run|docker-restart}"
+        ;;
+esac

@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "yetien-asr-model-server-grpc"
+version = "0.1.0"
+description = ""
+authors = ["Jianxuan Li"]
+readme = "README.md"
+packages = [{include = "yetien_asr_model_server_grpc"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

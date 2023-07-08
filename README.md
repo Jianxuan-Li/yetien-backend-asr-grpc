@@ -36,7 +36,7 @@ Prerequisites: Docker installed
 
 1. Clone the repo
 1. Run `./dev up` to start the development and enter the development container
-1. In the dev-container, run `./poetry install` to install the dependencies
+1. In the dev-container, run `poetry install` to install the dependencies
 1. In the dev-container, run `./dev run` to start the model server
 3. Run `./dev down` to stop the development
 

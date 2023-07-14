@@ -15,7 +15,7 @@ case $1 in
             exit 0
         fi
         mkdir -p ./tmp/{cache,logs}
-        docker compose -p $PROJECT_NAME -f docker/docker-compose.dev.yml run --name $PYTHON_DEV_CONTAINER_NAME -p 8000:8000 $SVC_NAME zsh
+        docker compose -p $PROJECT_NAME -f docker/docker-compose.dev.yml run --name $PYTHON_DEV_CONTAINER_NAME -p 8008:8000 $SVC_NAME zsh
         ;;
     # the test-in-container command is used to run the tests in a new container.
     # please keep the test stateless, so that the tests can be run on github actions.

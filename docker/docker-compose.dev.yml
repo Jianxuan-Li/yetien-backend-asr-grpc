@@ -11,7 +11,9 @@ services:
   asrserver:
     image: docker.io/freeyeti/dev-in-docker:python3.10-poetry1.4.0-gdal-dev
     container_name: asr-server-dev
-    env_file: ../.env
+    env_file: 
+      - ../.env
+      - ../.env.local
     environment:
       - IN_DEV_CONTAINER=yes
     ports:

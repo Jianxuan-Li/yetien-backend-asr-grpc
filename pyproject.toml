@@ -11,6 +11,9 @@ python = "^3.10"
 grpcio = "^1.56.0"
 grpcio-tools = "^1.56.0"
 redis = "^4.6.0"
+boto3 = "^1.28.3"
+requests = "^2.31.0"
+coverage = "^7.2.7"
 
 
 [build-system]

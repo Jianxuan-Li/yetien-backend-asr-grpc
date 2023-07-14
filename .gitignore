@@ -16,7 +16,7 @@ app.test.txt
 db.*
 
 .local
-
+.env.local
 .venv
 tmp
 assets

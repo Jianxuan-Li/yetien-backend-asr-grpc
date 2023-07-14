@@ -8,6 +8,8 @@
 /docker/*.env
 /docker/*.json
 
+.env.local
+
 # Python and others
 __pycache__
 *.pyc

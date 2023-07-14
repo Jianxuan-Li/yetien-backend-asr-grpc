@@ -53,10 +53,8 @@ case $1 in
         poetry run python3 manage.py migrate
         ;;
     test)
-        poetry run python3 manage.py test
-        ;;
-    coverage)
-        poetry run coverage run --source='.' manage.py test
+        poetry install
+        poetry run coverage run ./test.py
         poetry run coverage report
         ;;
     down)

@@ -46,6 +46,7 @@ case $1 in
         ;;
     staging)
         docker build -t grpc-test:latest .
+        docker image ls grpc-test:latest
         docker compose -p $PROJECT_NAME -f docker/docker-compose.staging.yml up -d
         ;;
     staging-down)

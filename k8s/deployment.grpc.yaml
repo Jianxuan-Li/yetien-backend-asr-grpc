@@ -18,7 +18,7 @@ spec:
         - name: __PULL_SECRET__
       containers:
         - name: yetien-asr-grpc-server
-          image: __IMAGE_BACKEND__:__IMAGE_TAG__
+          image: __IMAGE__:__IMAGE_TAG__
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9000

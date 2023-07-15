@@ -32,7 +32,7 @@ class AsrModelRunner(_pb2_grpc.AsrServicer):
 async def serve() -> None:
     server = grpc.aio.server()
     _pb2_grpc.add_AsrServicer_to_server(AsrModelRunner(), server)
-    listen_addr = "[::]:50051"
+    listen_addr = "[::]:9000"
     server.add_insecure_port(listen_addr)
     logging.info("Starting ASR model server on %s", listen_addr)
     await server.start()

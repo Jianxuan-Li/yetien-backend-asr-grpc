@@ -3,7 +3,7 @@ import logging
 
 import grpc
 
-_pb2, _pb2_grpc = grpc.protos_and_services("asrserver.proto")
+_pb2, _pb2_grpc = grpc.protos_and_services("server/asrserver.proto")
 
 test_args = {
     "speaking_id": "d7dc8797-1052-451a-8c2a-5a8b0d9ad796",
@@ -12,7 +12,7 @@ test_args = {
 
 
 def run():
-    with grpc.insecure_channel("localhost:50051") as channel:
+    with grpc.insecure_channel("localhost:9000") as channel:
         stub = _pb2_grpc.AsrStub(channel)
         response = stub.RunAsr(_pb2.NewTaskRequest(**test_args))
         print("message received: " + "success" if response.status else "failed")

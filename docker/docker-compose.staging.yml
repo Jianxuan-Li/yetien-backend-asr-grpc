@@ -1,0 +1,18 @@
+version: "3.5"
+
+services:
+  asrserver:
+    image: grpc-test:latest
+    container_name: asr-server-dev
+    env_file: 
+      - ../.env
+      - ../.env.local
+    environment:
+      - IN_DEV_CONTAINER=yes
+    ports:
+      - "0.0.0.0:9000:9000"
+    volumes:
+      - pypoetrycache:/root/.cache/pypoetry
+
+volumes:
+  pypoetrycache:

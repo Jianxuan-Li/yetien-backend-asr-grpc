@@ -44,6 +44,14 @@ case $1 in
         docker stop $PYTHON_DEV_CONTAINER_NAME
         docker rm $PYTHON_DEV_CONTAINER_NAME
         ;;
+    staging)
+        docker build -t grpc-test:latest .
+        docker compose -p $PROJECT_NAME -f docker/docker-compose.staging.yml up -d
+        ;;
+    staging-down)
+        docker compose -p $PROJECT_NAME -f docker/docker-compose.staging.yml down
+        docker rmi grpc-test:latest
+        ;;
     -h | --help)
         echo $"Usage: $0 {up|run|down|test}"
         ;;

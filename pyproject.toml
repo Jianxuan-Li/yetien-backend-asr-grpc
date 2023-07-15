@@ -14,7 +14,11 @@ redis = "^4.6.0"
 boto3 = "^1.28.3"
 requests = "^2.31.0"
 coverage = "^7.2.7"
+protobuf = "^4.23.4"
 
+
+[tool.poetry.group.dev.dependencies]
+pycodestyle = "^2.10.0"
 
 [build-system]
 requires = ["poetry-core"]

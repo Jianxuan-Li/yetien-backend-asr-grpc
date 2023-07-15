@@ -22,7 +22,7 @@ class Model(metaclass=Singleton):
 
         self.lock.release()
         return model_id
-    
+
     def _release_model(self, model_id) -> None:
         self.lock.acquire()
         if model_id in self.in_use:

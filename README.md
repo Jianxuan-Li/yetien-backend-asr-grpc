@@ -45,6 +45,11 @@ Prerequisites: Docker installed
 1. Run `./dev up` to start the development and enter the development container
 1. In the dev-container, run `./dev test` to run the tests
 
+## Staging
+
+1. Run `./dev staging` to build the staging image and start the staging container
+1. Run `./dev staging-down` to stop the staging container
+
 #### connect to development models
 
 https://asr.yetien.com/docs#/

@@ -12,7 +12,7 @@ on:
 
 env:
   # Define image names
-  MODEL_IMAGE: ${{ secrets.MODEL_IMAGE }}
+  GRPC_IMAGE: ${{ secrets.GRPC_IMAGE }}
   REGISTRY: ghcr.io
 
 
@@ -36,6 +36,43 @@ jobs:
           name: ${{ github.event.repository.name }}-deployment
           path: version.txt
 
+  build:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.ACTIONS_CR_TK }}
+
+      - name: Check image version
+        env:
+          IMAGE_TAG: ${{ github.ref_name }}
+        run: |
+          echo $IMAGE_TAG
+      - uses: actions/checkout@v3
+        with:
+          ref: ${{ github.ref_name }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: ${{ env.GRPC_IMAGE }}
+
+      -
+        name: Build and push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          file: ./Dockerfile
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          target: python3
+
   ## Generate deployment files.
   generate-artifacts:
     needs: config
@@ -55,23 +92,19 @@ jobs:
       - name: Generate deployment files
         env:
           IMAGE_TAG: ${{ github.ref_name }}
-          WWW_DATA_PATH: ${{ secrets.WWW_DATA_PATH }}
           PULL_SECRET: ${{ secrets.PULL_SECRET }}
         run: |
-          sed -i "s@MODEL_IMAGE@$__IMAGE__@g" k8s/deployment.model1.yaml
-          sed -i "s@MODEL_IMAGE@$__IMAGE__@g" k8s/deployment.model2.yaml
-          sed -i "s@${{ secrets.NODE_1_NAME }}@$__NODE_NAME__@g" k8s/deployment.model1.yaml
-          sed -i "s@${{ secrets.NODE_2_NAME }}@$__NODE_NAME__@g" k8s/deployment.model2.yaml
+          sed -i "s@GRPC_IMAGE@$__IMAGE__@g" k8s/deployment.grpc.yaml
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:
           name: ${{ github.event.repository.name }}-deployment
           path: |
-            k8s/deployment.model1.yaml
-            k8s/deployment.model2.yaml
+            k8s/deployment.grpc.yaml
+            k8s/service.grpc.yaml
 
   deploy:
-    needs: generate-artifacts
+    needs: [build, generate-artifacts]
 
     runs-on: [ubuntu-latest]
 
@@ -100,7 +133,5 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SERVER_PRIVATE_KEY }}
           script: |
-            kubectl apply -f ${{secrets.DEPLOYMENTS_PATH}}/${{ github.ref_name }}/deployment.model1.yaml
-            kubectl apply -f ${{secrets.DEPLOYMENTS_PATH}}/${{ github.ref_name }}/deployment.model2.yaml
-            kubectl apply -f ${{secrets.DEPLOYMENTS_PATH}}/${{ github.ref_name }}/service.model1.yaml
-            kubectl apply -f ${{secrets.DEPLOYMENTS_PATH}}/${{ github.ref_name }}/service.model2.yaml
+            kubectl apply -f ${{secrets.DEPLOYMENTS_PATH}}/${{ github.ref_name }}/deployment.grpc.yaml
+            kubectl apply -f ${{secrets.DEPLOYMENTS_PATH}}/${{ github.ref_name }}/service.grpc.yaml

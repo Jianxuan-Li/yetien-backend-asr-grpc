@@ -94,7 +94,7 @@ jobs:
           IMAGE_TAG: ${{ github.ref_name }}
           PULL_SECRET: ${{ secrets.PULL_SECRET }}
         run: |
-          sed -i "s@GRPC_IMAGE@$__IMAGE__@g" k8s/deployment.grpc.yaml
+          sed -i "s@__IMAGE__@$GRPC_IMAGE@g" k8s/deployment.grpc.yaml
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:

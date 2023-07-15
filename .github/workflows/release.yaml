@@ -95,6 +95,8 @@ jobs:
           PULL_SECRET: ${{ secrets.PULL_SECRET }}
         run: |
           sed -i "s@__IMAGE__@$GRPC_IMAGE@g" k8s/deployment.grpc.yaml
+          sed -i "s@__PULL_SECRET__@$PULL_SECRET@g" k8s/deployment.grpc.yaml
+          sed -i "s@__IMAGE_TAG__@$IMAGE_TAG@g" k8s/deployment.grpc.yaml
       - name: Upload artifacts
         uses: actions/upload-artifact@v3
         with:

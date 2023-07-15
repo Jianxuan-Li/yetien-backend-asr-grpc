@@ -14,19 +14,13 @@ case $1 in
             echo "Use this command out of container."
             exit 0
         fi
-        mkdir -p ./tmp/{cache,logs}
         docker compose -p $PROJECT_NAME -f docker/docker-compose.dev.yml run --name $PYTHON_DEV_CONTAINER_NAME -p 8008:8000 $SVC_NAME zsh
         ;;
     # the test-in-container command is used to run the tests in a new container.
     # please keep the test stateless, so that the tests can be run on github actions.
     test-in-container)
-        mkdir -p ./tmp/{cache,logs}
         docker compose -p $PROJECT_NAME -f docker/docker-compose.test.yml run backend_test /code/docker/test-in-container.sh
         docker compose -p $PROJECT_NAME -f docker/docker-compose.test.yml down
-        ;;
-    initdir)
-        mkdir -p /data/logs
-        mkdir -p /data/cache
         ;;
     run)
         if [ -z "$IN_DEV_CONTAINER" ] || [ "$IN_DEV_CONTAINER" != "yes" ]; then
@@ -34,23 +28,7 @@ case $1 in
             exit 0
         fi
         poetry install
-        poetry run python3 manage.py migrate
-        poetry run python3 manage.py runserver 0.0.0.0:8000
-        ;;
-    mkmsg)
-        poetry run python3 manage.py makemessages -l en
-        ;;
-    comsg)
-        poetry run python3 manage.py compilemessages -l en
-        ;;
-    makemigrations)
-        poetry run python3 manage.py makemigrations
-        ;;
-    createsuperuser)
-        poetry run python3 manage.py createsuperuser
-        ;;
-    migrate)
-        poetry run python3 manage.py migrate
+        poetry run python ./run.py
         ;;
     test)
         poetry install
@@ -66,17 +44,7 @@ case $1 in
         docker stop $PYTHON_DEV_CONTAINER_NAME
         docker rm $PYTHON_DEV_CONTAINER_NAME
         ;;
-    deploy-check)
-        if [ -z "$IN_CONTAINER" ] || [ "$IN_CONTAINER" != "yes" ]; then
-            echo "Use this command in container."
-            exit 0
-        fi
-        DJANGO_SETTINGS_MODULE=app.settings.production poetry run python3 manage.py check --deploy
-        ;;
-    docker-restart)
-        docker start $(docker ps -a -q -f status=exited)
-        ;;
     -h | --help)
-        echo $"Usage: $0 {backend|down|run|docker-restart}"
+        echo $"Usage: $0 {up|run|down|test}"
         ;;
 esac

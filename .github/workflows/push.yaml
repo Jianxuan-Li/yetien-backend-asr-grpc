@@ -27,6 +27,10 @@ jobs:
           echo 'YETIEN_DEV_MODEL_0_USER=${{ secrets.YETIEN_DEV_MODEL_0_USER }}' >> .env.local
           echo 'YETIEN_DEV_MODEL_0_PWD=${{ secrets.YETIEN_DEV_MODEL_0_PWD }}' >> .env.local
 
+      - name: pull docker image
+        run: |
+          docker compose -f docker/docker-compose.test.yml pull --quiet
+
       - name: Run test in container
         run: |
           docker compose -p asr_grpc_test -f docker/docker-compose.test.yml run asrserver_test /code/docker/test-in-container.sh

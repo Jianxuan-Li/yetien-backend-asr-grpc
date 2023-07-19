@@ -1,0 +1,36 @@
+name: release
+
+on: 
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: [ubuntu-latest]
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: create .env and .env.local file
+        run: |
+          touch .env
+          touch .env.local
+          echo ${{ secrets.AWS_STORAGE_BUCKET_NAME }} > .env.local
+          echo ${{ secrets.AWS_S3_ACCESS_KEY_ID }} >> .env.local
+          echo ${{ secrets.AWS_S3_SECRET_ACCESS_KEY }} >> .env.local
+          echo ${{ secrets.AWS_S3_ENDPOINT_URL }} >> .env.local
+          echo ${{ secrets.AWS_S3_REGION_NAME }} >> .env.local
+          echo ${{ secrets.YETIEN_DEV_MODEL_0_USER }} >> .env.local
+          echo ${{ secrets.YETIEN_DEV_MODEL_0_PWD }} >> .env.local
+
+      - name: Run test in container
+        run: |
+          docker compose -p asr_grpc_test -f docker/docker-compose.test.yml run asrserver_test /code/docker/test-in-container.sh
+
+      - name: shutdown test container
+        run: |
+          docker compose -p asr_grpc_test -f docker/docker-compose.test.yml down

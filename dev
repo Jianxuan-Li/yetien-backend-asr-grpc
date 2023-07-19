@@ -19,7 +19,7 @@ case $1 in
     # the test-in-container command is used to run the tests in a new container.
     # please keep the test stateless, so that the tests can be run on github actions.
     test-in-container)
-        docker compose -p $PROJECT_NAME -f docker/docker-compose.test.yml run backend_test /code/docker/test-in-container.sh
+        docker compose -p $PROJECT_NAME -f docker/docker-compose.test.yml run asrserver_test /code/docker/test-in-container.sh
         docker compose -p $PROJECT_NAME -f docker/docker-compose.test.yml down
         ;;
     run)

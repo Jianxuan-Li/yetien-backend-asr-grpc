@@ -3,7 +3,9 @@ version: "3.5"
 services:
   asrserver_test:
     image: docker.io/freeyeti/dev-in-docker:python3.10-poetry1.4.0-gdal-dev
-    env_file: ../.env
+    env_file: 
+      - ../.env
+      - ../.env.local
     environment:
       - IN_DEV_CONTAINER=yes
     ports:

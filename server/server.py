@@ -15,9 +15,12 @@ class AsrModelRunner(_pb2_grpc.AsrServicer):
     async def RunAsr(
         self, request: _pb2.NewTaskRequest, context: grpc.aio.ServicerContext
     ) -> _pb2.TaskRecieved:
+        if t.model_in_use:
+            return _pb2.TaskRecieved(status=False, text="", duration=0, error="model is in use")
+
         logging.info("Task: %s, %s", request.speaking_id, request.object_id)
         start_time = monotonic()
-        result = await t.run(request.speaking_id, request.object_id)
+        result = t.run(request.speaking_id, request.object_id)
         duration = monotonic() - start_time
         status = True
         if not result or "text" not in result or len(result["text"]) == 0:
@@ -36,5 +39,6 @@ async def serve() -> None:
     listen_addr = "[::]:9000"
     server.add_insecure_port(listen_addr)
     logging.info("Starting ASR model server on %s", listen_addr)
+    logging.basicConfig(level=logging.INFO)
     await server.start()
     await server.wait_for_termination()

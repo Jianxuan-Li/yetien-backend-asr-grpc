@@ -11,7 +11,7 @@ class Task:
     def __init__(self) -> None:
         self.model_in_use = False
 
-    async def run(self, speaking_id: str, obj_id: str) -> str:
+    def run(self, speaking_id: str, obj_id: str) -> str:
         if self.model_in_use:
             return {"error": "model is in use"}
 

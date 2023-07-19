@@ -1,6 +1,5 @@
 import asyncio
 import logging
-import random
 import grpc
 from time import monotonic
 from task import Task
@@ -27,9 +26,7 @@ class AsrModelRunner(_pb2_grpc.AsrServicer):
             status = False
             message = result["error"]
             return _pb2.TaskRecieved(status=status, text="", duration=duration, error=message)
-        print("status: ", "success" if status else "failed")
-        print("text: ", result["text"])
-        print("duration: ", duration)
+        logging.info("Task: %s, status: %s, text: %s \nduration %.2f", request.speaking_id, "success" if status else "failed", result["text"], duration)
         return _pb2.TaskRecieved(status=status, text=result["text"], duration=duration, error="")
 
 

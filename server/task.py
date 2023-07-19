@@ -1,21 +1,27 @@
 import asyncio
 import time
 import requests
+import logging
+from time import monotonic
 from settings import MODELS
 from s3 import generate_presigned_url
 
 
 class Task:
     def __init__(self) -> None:
-        pass
+        self.model_in_use = False
 
     def run(self, speaking_id: str, obj_id: str) -> str:
+        if self.model_in_use:
+            return {"error": "model is in use"}
+
+        self.model_in_use = True
         req_file = {"audio_file": self.get_audio(obj_id)}
         req_param = {"task": "transcribe", "output": "json"}
         model_url = MODELS[0][0]
         model_username = MODELS[0][1]
         model_password = MODELS[0][2]
-        print("start to send request to model server: ", model_url)
+        logging.info("start to send request to model server: %s", model_url)
         r = requests.post(
             model_url,
             files=req_file,
@@ -24,17 +30,21 @@ class Task:
         )
 
         if r.status_code != 200:
-            print("response from model server: ", r.status_code)
-            print(r)
+            logging.error("bad model response: ", r.status_code)
             return {"error": "bad model response"}
+        
+        self.model_in_use = False
 
         return r.json()
 
     def get_audio(self, obj_id: str) -> str:
         self.obj_id = obj_id
+        logging.info("start to download file: %s, %s", obj_id, str(type(obj_id)))
         url = generate_presigned_url(obj_id)
-        print("download file from:", url)
+        start_time = monotonic()
         file_obj = requests.get(url)
+        duration = monotonic() - start_time
+        logging.info("download file: %s, duration: %.2f", obj_id, duration)
         return file_obj.content
 
     def __str__(self) -> str:

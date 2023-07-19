@@ -21,12 +21,16 @@ class AsrModelRunner(_pb2_grpc.AsrServicer):
         result = t.run(request.speaking_id, request.object_id)
         duration = monotonic() - start_time
         status = True
-        if not result or not result["text"] or len(result["text"]) == 0:
+        if not result or "text" not in result or len(result["text"]) == 0:
             status = False
+        if "error" in result:
+            status = False
+            message = result["error"]
+            return _pb2.TaskRecieved(status=status, text="", duration=duration, error=message)
         print("status: ", "success" if status else "failed")
         print("text: ", result["text"])
         print("duration: ", duration)
-        return _pb2.TaskRecieved(status=status, text=result["text"], duration=duration)
+        return _pb2.TaskRecieved(status=status, text=result["text"], duration=duration, error="")
 
 
 async def serve() -> None:

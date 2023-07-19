@@ -23,6 +23,11 @@ class Task:
             auth=(model_username, model_password),
         )
 
+        if r.status_code != 200:
+            print("response from model server: ", r.status_code)
+            print(r)
+            return {"error": "bad model response"}
+
         return r.json()
 
     def get_audio(self, obj_id: str) -> str:

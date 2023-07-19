@@ -15,4 +15,5 @@ message TaskRecieved {
   bool status = 1;
   string text = 2;
   float duration = 3;
+  string error = 4;
 }

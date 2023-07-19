@@ -24,7 +24,14 @@ services:
       - pypoetrycache:/root/.cache/pypoetry
     # depends_on:
     #   - cache
+    networks:
+      - yetien_asr_grpc_network
 
 volumes:
   pypoetrycache:
   # cache:
+
+networks:
+  yetien_asr_grpc_network:
+    name: yetien_asr_grpc_network
+    external: true

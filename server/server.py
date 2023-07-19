@@ -17,7 +17,7 @@ class AsrModelRunner(_pb2_grpc.AsrServicer):
     ) -> _pb2.TaskRecieved:
         logging.info("Task: %s, %s", request.speaking_id, request.object_id)
         start_time = monotonic()
-        result = t.run(request.speaking_id, request.object_id)
+        result = await t.run(request.speaking_id, request.object_id)
         duration = monotonic() - start_time
         status = True
         if not result or "text" not in result or len(result["text"]) == 0:

@@ -11,29 +11,35 @@ class Task:
     def __init__(self) -> None:
         self.model_in_use = False
 
-    def run(self, speaking_id: str, obj_id: str) -> str:
+    async def run(self, speaking_id: str, obj_id: str) -> str:
         if self.model_in_use:
             return {"error": "model is in use"}
 
         self.model_in_use = True
-        req_file = {"audio_file": self.get_audio(obj_id)}
-        req_param = {"task": "transcribe", "output": "json"}
-        model_url = MODELS[0][0]
-        model_username = MODELS[0][1]
-        model_password = MODELS[0][2]
-        logging.info("start to send request to model server: %s", model_url)
-        r = requests.post(
-            model_url,
-            files=req_file,
-            params=req_param,
-            auth=(model_username, model_password),
-        )
 
-        if r.status_code != 200:
-            logging.error("bad model response: ", r.status_code)
-            return {"error": "bad model response"}
-        
-        self.model_in_use = False
+        try:
+            req_file = {"audio_file": self.get_audio(obj_id)}
+            req_param = {"task": "transcribe", "output": "json"}
+            model_url = MODELS[0][0]
+            model_username = MODELS[0][1]
+            model_password = MODELS[0][2]
+            logging.info("start to send request to model server: %s", model_url)
+            r = requests.post(
+                model_url,
+                files=req_file,
+                params=req_param,
+                auth=(model_username, model_password),
+            )
+
+            if r.status_code != 200:
+                logging.error("bad model response: ", r.status_code)
+                return {"error": "bad model response"}
+            
+            self.model_in_use = False
+        except Exception as e:
+            logging.exception("error when sending request to model server")
+            self.model_in_use = False
+            return {"error": "error when sending request to model server"}
 
         return r.json()
 

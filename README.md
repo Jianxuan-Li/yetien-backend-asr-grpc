@@ -1,5 +1,9 @@
 # Yetien
 
+## This project is deprecated
+
+new: https://github.com/Jianxuan-Li/yetien-model-grpc-server
+
 ## Overview
 
 This project is the ASR model server with a gRPC server
